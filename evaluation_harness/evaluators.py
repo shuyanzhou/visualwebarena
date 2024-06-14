@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 from typing import Any, Optional, TypedDict, Union, Dict
 from urllib.parse import urljoin
+import warnings
 
 import numpy.typing as npt
 import numpy as np
@@ -18,11 +19,15 @@ from PIL import Image
 from playwright.sync_api import Page
 from evaluation_harness import image_utils
 from evaluation_harness.helper_functions import (
+    llm_fuzzy_exact_match,
     llm_fuzzy_match,
+    llm_fuzzy_must_include,
+    llm_fuzzy_na_match,
+    llm_question_answering,
+    llm_context_aware_question_answering,
     llm_ua_match,
     PseudoPage,
 )
-
 
 class Action(TypedDict):
     action_type: int
@@ -42,7 +47,6 @@ class Action(TypedDict):
 
 
 Observation = str | npt.NDArray[np.uint8]
-
 
 class StateInfo(TypedDict):
     observation: dict[str, Observation]
@@ -171,6 +175,11 @@ class StringEvaluator(Evaluator):
 
     @staticmethod
     @beartype
+    def fuzzy_exact_match(ref: str, pred: str, intent: str) -> float:
+        return llm_fuzzy_exact_match(pred, ref, intent)
+
+    @staticmethod
+    @beartype
     def must_include(ref: str, pred: str, tokenize: bool = False) -> float:
         clean_ref = StringEvaluator.clean_answer(ref)
         clean_pred = StringEvaluator.clean_answer(pred)
@@ -202,12 +211,44 @@ class StringEvaluator(Evaluator):
 
     @staticmethod
     @beartype
+    def fuzzy_must_include(ref: str, pred: str, intent: str) -> float:
+        return llm_fuzzy_must_include(pred, ref, intent)
+
+    @staticmethod
+    @beartype
+    def question_answering(
+        question: str, answer: str, passage: str
+    ) -> float:
+        return llm_question_answering(question, answer, passage=passage)
+
+    @staticmethod
+    @beartype
+    def context_aware_question_answering(
+        question: str, answer: str, passage: str, intent: str
+    ) -> float:
+        return llm_context_aware_question_answering(question, answer, passage=passage, context=intent)  
+
+    @staticmethod
+    @beartype
+    def fuzzy_na_match(intent: str, reason: str, pred: str) -> float:
+        return llm_fuzzy_na_match(pred, reason, intent)
+
+    @staticmethod
+    @beartype
     def fuzzy_match(ref: str, pred: str, intent: str) -> float:
+        warnings.warn(
+            "fuzzy_match will be deprecated in WebArena 2.0 in favor of fuzzy_exact_match and fuzzy_must_include.",
+            DeprecationWarning
+        )
         return llm_fuzzy_match(pred, ref, intent)
 
     @staticmethod
     @beartype
     def ua_match(ref: str, pred: str, intent: str) -> float:
+        warnings.warn(
+            "llm_ua_match will be deprecated in WebArena 2.0 in favor of fuzzy_na_match.", 
+            DeprecationWarning
+        )
         return llm_ua_match(pred, ref, intent)
 
     @beartype
@@ -249,6 +290,10 @@ class StringEvaluator(Evaluator):
             match approach:
                 case "exact_match":
                     score *= self.exact_match(ref=value, pred=pred)
+                case "fuzzy_exact_match":
+                    score *= self.fuzzy_exact_match(
+                        ref=value, pred=pred, intent=configs["intent"]
+                    )
                 case "required_values":
                     required_values = value
                     assert isinstance(required_values, list)
@@ -275,6 +320,15 @@ class StringEvaluator(Evaluator):
                             pred=pred,
                             tokenize=(len(value) == 1)
                         ) for v in value_or])
+                case "fuzzy_must_include":
+                    assert isinstance(value, list)
+                    for must_value in value:
+                        assert "|OR|" not in must_value
+                        score *= self.fuzzy_must_include(
+                            ref=value,
+                            pred=pred,
+                            intent=configs["intent"]
+                        )
                 case "must_exclude":
                     assert isinstance(value, list)
                     for must_excl_value in value:
@@ -290,20 +344,42 @@ class StringEvaluator(Evaluator):
                             found = True
                             break
                     score = score * found
+                case "qa":
+                    assert isinstance(value, list)
+                    for qa in value:
+                        question = qa["question"]
+                        answer = qa["answer"]
+                        score *= self.question_answering(
+                            question=question,
+                            answer=answer,
+                            passage=pred,
+                        )
+                case "context_qa":
+                    assert isinstance(value, list)
+                    for qa in value:
+                        question = qa["question"]
+                        answer = qa["answer"]
+                        score *= self.context_aware_question_answering(
+                            question=question,
+                            answer=answer,
+                            passage=pred,
+                            context=configs["intent"]
+                        )
+                case "fuzzy_na_match":
+                    score = 1.0 * self.fuzzy_na_match(
+                        intent=configs["intent"],
+                        reason=value,
+                        pred=pred
+                    )
                 case "fuzzy_match":
                     intent = configs["intent"]
+                    # evaluate if the reason matches with the annotation
                     if value == "N/A":
-                        # if the instruction only asks the model to generate N/A when encountering an unachievable task
-                        # without more concrete reasons
-                        score *= self.exact_match(ref=value, pred=pred)
-                        # if the instruction also asks the model to generate the reason why the task is unachievable
-                        # this should be the default as it will prevent false positive N/A`
-                        if score != 1:
-                            score = 1.0 * self.ua_match(
-                                intent=configs["intent"],
-                                ref=configs["eval"]["string_note"],
-                                pred=pred,
-                            )
+                        score = 1.0 * self.ua_match(
+                            intent=configs["intent"],
+                            ref=configs["eval"]["string_note"],
+                            pred=pred,
+                        )
                     else:
                         assert isinstance(value, list)
                         for reference in value:
@@ -517,6 +593,16 @@ class HTMLContentExactEvaluator(Evaluator):
                                 for value in value_or
                             ]
                         )
+            elif "qa" in target["required_contents"]:
+                qas = target["required_contents"]["qa"]
+                assert isinstance(qas, list)
+                for qa in qas:
+                    question, answer = qa["question"], qa["answer"]
+                    score *= StringEvaluator.question_answering(
+                        question=question,
+                        answer=answer,
+                        passage=selected_element,
+                    )
             elif "fuzzy_match" in target["required_contents"]:
                 targets = target["required_contents"]["fuzzy_match"]
                 assert isinstance(targets, str)

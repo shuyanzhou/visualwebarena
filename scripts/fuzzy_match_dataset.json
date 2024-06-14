@@ -1,0 +1,182 @@
+{
+    "fuzzy_match":[
+        {
+            "task": "Show me the order statuses for order number 170 and 189.",
+            "reference": ["170: cancelled", "189: pending"],
+            "prediction": "Order number 170 is Canceled, order number 189 is Pending",
+            "label": true
+        },
+        {
+            "task": "Show me how many orders are placed each month over the past 7 months",
+            "reference": ["January: 10", "February: 15", "March: 20", "April: 25", "May: 30", "June: 35", "July: 40"],
+            "prediction": "Here are the number of orders placed each month over the past 7 months: In January, 10 orders were placed. In February, 15 orders were placed. In March, 20 orders were placed. In April, 25 orders were placed. In May, 30 orders were placed. In June, 35 orders were placed. In July, 40 orders were placed.",
+            "label": true
+        },
+        {
+            "task": "Show me how many orders are placed each month over the past 7 months",
+            "reference": ["January: 10", "February: 15", "March: 20", "April: 25", "May: 30", "June: 35", "July: 40"],
+            "prediction": "Here are the number of orders placed each month over the past 7 months: In January, 10 orders were placed. In February, 15 orders were placed. In March, 20 orders were placed. In April, 25 orders were placed. In May, 30 orders were placed. In June, 35 orders were placed.",
+            "label": false
+        },
+        {
+            "task": "Show me how many orders are placed each month over the past 7 months",
+            "reference": ["January: 10", "February: 15", "March: 20", "April: 25", "May: 30", "June: 35", "July: 40"],
+            "prediction": "Here are the number of orders placed each month over the past 7 months: In January, 10 orders were placed. In March, 20 orders were placed. In April, 25 orders were placed. In May, 30 orders were placed. In June, 35 orders were placed.",
+            "label": false
+        },
+        {
+            "task": "Show me how many orders are placed each month over the past 7 months",
+            "reference": ["January: 10", "February: 15", "March: 20", "April: 25", "May: 30", "June: 35", "July: 40"],
+            "prediction": "Here are the number of orders placed each month over the past 7 months: In January, 10 orders were placed. In February, 8 orders were placed. In March, 20 orders were placed. In April, 25 orders were placed. In May, 30 orders were placed. In June, 35 orders were placed. In July, 40 orders were placed.",
+            "label": false
+        },
+        {
+            "task": "tell me the count of comments that have received more downvotes than upvotes for the user who made the latest post on the Showerthoughts forum.",
+            "reference": "0",
+            "prediction": "zero",
+            "label": true
+        },
+        {
+            "task": "tell me the count of comments that have received more downvotes than upvotes for the user who made the latest post on the Showerthoughts forum.",
+            "reference": "0",
+            "prediction": "there is no comment that has received more downvotes than upvotes for the user who made the latest post on the Showerthoughts forum.",
+            "label": true
+        },
+        {
+            "task": "tell me the count of comments that have received more downvotes than upvotes for the user who made the latest post on the Showerthoughts forum.",
+            "reference": "0",
+            "prediction": "there are three such comments",
+            "label": false
+        },
+        {
+            "task": "What's the closest national park to the largest city in Maine?",
+            "reference": "Acadia National Park",
+            "prediction": "Acadia National Park is the closest national park to Portland, Maine.",
+            "label": true
+        },
+        {
+            "task": "What's the closest national park to the largest city in Maine?",
+            "reference": "Acadia National Park",
+            "prediction": "Shenanigans National Park",
+            "label": false
+        }
+    ],
+    "fuzzy_match_requirement":[
+        {
+            "task": "Does this post inquire about how to deal with long-distance relationships? Yes or No",
+            "prediction": "Hi everyone,\n\nI'm reaching out to this community for some advice and support on handling a long-distance relationship. My partner and I have recently found ourselves in different cities/countries due to work/study commitments, and we're trying to figure out the best ways to maintain our relationship despite the distance.\n\nIf any of you have experience with long-distance relationships, I'd love to hear your tips and insights. Specifically, I'm curious about:\n\nCommunication: How do you keep the communication flowing and meaningful? Any tools or methods that have worked well for you?\n\nTrust and Security: How do you build and maintain trust when you're not physically together?\n\nQuality Time: What are some creative ways to spend quality time together despite the distance?\n\nManaging Expectations: How do you manage expectations and deal with the challenges that come with being apart?\n\nAny advice, personal stories, or resources you can share would be greatly appreciated. Thank you so much in advance for your help!\n\nBest regards,",
+            "label": "yes"
+        },
+        {
+            "task": "Does this post inquire about how to deal with long-distance relationships? Yes or No",
+            "prediction": "long-distance relationship is not a big problem for me, I can handle it well. I enjoy it.",
+            "label": "no"
+        },
+        {
+            "task": "Does this post inquire about the effectiveness of online learning? Yes or no.",
+            "prediction": "Effectiveness of online learning?\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nI'm looking for some feedback and insights on the effectiveness of online learning. With the increasing shift towards digital education, I'm curious about how well online learning works compared to traditional in-person classes.\n\n 183 comments",
+            "label": "yes"
+        },
+        {
+            "task": "Does this post contains the exact phrase 'your opinion'? Yes or no.",
+            "prediction": "Effectiveness of online learning?\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nI'm looking for some feedback and insights on the effectiveness of online learning. With the increasing shift towards digital education, I'm curious about how well online learning works compared to traditional in-person classes.\n\n 183 comments",
+            "label": "no"
+        },
+        {
+            "task": "Does this post contains the exact phrase 'your opinion'? Yes or no.",
+            "prediction": "Effectiveness of online learning?\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nI'm looking for some feedback and insights on the effectiveness of online learning. With the increasing shift towards digital education, I'm curious about how well online learning works compared to traditional in-person classes. Your opnion?\n\n 183 comments",
+            "label": "yes"
+        },
+        {
+            "task": "Does this post contains the exact phrase 'your opinion'? Yes or no.",
+            "prediction": "Effectiveness of online learning?\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nI'm looking for some feedback and insights on the effectiveness of online learning. With the increasing shift towards digital education, I'm curious about how well online learning works compared to traditional in-person classes. your opnion?\n\n 183 comments",
+            "label": "yes"
+        },
+        {
+            "task": "Does this post contains the exact phrase 'your opinion'? Yes or no.",
+            "prediction": "Effectiveness of online learning?\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nI'm looking for some feedback and insights on the effectiveness of online learning. With the increasing shift towards digital education, I'm curious about how well online learning works compared to traditional in-person classes. opnion?\n\n 183 comments",
+            "label": "no"
+        },
+        {
+            "task": "Does this post ask for noise-cancelling headphone recommandation? Yes or no.",
+            "prediction": "Need your suggestions!\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nHi, can any of you recommand a headphone under $200?\n\n 183 comments",
+            "label": "no"
+        },
+        {
+            "task": "Does this post ask for noise-cancelling headphone recommandation? Yes or no.",
+            "prediction": "Need your suggestions!\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nHi, can any of you recommand a headphone under $200? I want to block the noise\n\n 183 comments",
+            "label": "yes"
+        },
+        {
+            "task": "oes this post clear state the budget limit is $200? Yes or no.",
+            "prediction": "Need your suggestions!\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nHi, can any of you recommand a headphone under $120? I want to block the noise\n\n 183 comments",
+            "label": "no"
+        },
+        {
+            "task": "Does this post ask for Sony headphone recommandation? Yes or no.",
+            "prediction": "Need your suggestions!\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nHi, can any of you recommand a headphone under $200?\n\n 183 comments",
+            "label": "no"
+        },
+        {
+            "task": "Does this post ask for Sony headphone recommandation? Yes or no.",
+            "prediction": "Need your suggestions!\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nHi, can any of you recommand a sony headphone under $200?\n\n 183 comments",
+            "label": "yes"
+        },
+        {
+            "task": "Does this post ask for Sony headphone recommandation? Yes or no.",
+            "prediction": "Need your suggestions!\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nHi, can any of you recommand a headphone under $200? Sony wanted\n\n 183 comments",
+            "label": "yes"
+        },
+        {
+            "task": "Does this post ask for Sony headphone recommandation? Yes or no.",
+            "prediction": "Need your suggestions!\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nHi, can any of you recommand a headphone under $200? I don't like Sony\n\n 183 comments",
+            "label": "no"
+        },
+        {
+            "task": "Does this post ask for used iphone recommandation? Yes or no.",
+            "prediction": "Need your suggestions!\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nHi, can any of you recommand a iphone model under $750? \n\n 183 comments",
+            "label": "no"
+        },
+        {
+            "task": "Does this post ask for used iphone recommandation? Yes or no.",
+            "prediction": "Need your suggestions!\n\nSubmitted by ewa1fads 2 years ago in machinelearning\n\nHi, can any of you recommand a iphone model where the typical used ones are under $750 on Ebay? \n\n 183 comments",
+            "label": "yes"
+        },
+        {
+            "task": "Does this passage clearly state the desire for a refund? Yes or no.",
+            "prediction": "I hope this message finds you well. I am writing to request a refund for the phone screen protector I purchased, which unfortunately broke after just three days of use. The details of my purchase are as follows:\n\nOrder Number: #000000180\nProduct SKU: [Insert Product SKU Here]\nI am disappointed with the quality of the screen protector as it did not meet my expectations for durability. Given that it broke so quickly, I believe a refund is warranted.\n\nPlease advise on the next steps to process my refund. If you require any additional information, feel free to contact me at your earliest convenience.",
+            "label": "yes"
+        },
+        {
+            "task": "Does this passage clearly state the product broke after three days of use? Yes or no.",
+            "prediction": "I hope this message finds you well. I am writing to request a refund for the phone screen protector I purchased, which unfortunately broke after just three days of use. The details of my purchase are as follows:\n\nOrder Number: #000000180\nProduct SKU: [Insert Product SKU Here]\nI am disappointed with the quality of the screen protector as it did not meet my expectations for durability. Given that it broke so quickly, I believe a refund is warranted.\n\nPlease advise on the next steps to process my refund. If you require any additional information, feel free to contact me at your earliest convenience.",
+            "label": "yes"
+        },
+        {
+            "task": "Does the passage include the accurate order number 000000180? Yes or no.",
+            "prediction": "I hope this message finds you well. I am writing to request a refund for the phone screen protector I purchased, which unfortunately broke after just three days of use. The details of my purchase are as follows:\n\nOrder Number: #000000180\nProduct SKU: [Insert Product SKU Here]\nI am disappointed with the quality of the screen protector as it did not meet my expectations for durability. Given that it broke so quickly, I believe a refund is warranted.\n\nPlease advise on the next steps to process my refund. If you require any additional information, feel free to contact me at your earliest convenience.",
+            "label": "yes"
+        },
+        {
+            "task": "Does the passage include the accurate order number 000000180? Yes or no.",
+            "prediction": "I hope this message finds you well. I am writing to request a refund for the phone screen protector I purchased, which unfortunately broke after just three days of use. The details of my purchase are as follows:\n\nOrder Number: 180\nProduct SKU: [Insert Product SKU Here]\nI am disappointed with the quality of the screen protector as it did not meet my expectations for durability. Given that it broke so quickly, I believe a refund is warranted.\n\nPlease advise on the next steps to process my refund. If you require any additional information, feel free to contact me at your earliest convenience.",
+            "label": "yes"
+        },
+        {
+            "task": "Does the passage include the accurate order number 000000180? Yes or no.",
+            "prediction": "I hope this message finds you well. I am writing to request a refund for the phone screen protector I purchased, which unfortunately broke after just three days of use. The details of my purchase are as follows:\n\nOrder Number: #00180\nProduct SKU: [Insert Product SKU Here]\nI am disappointed with the quality of the screen protector as it did not meet my expectations for durability. Given that it broke so quickly, I believe a refund is warranted.\n\nPlease advise on the next steps to process my refund. If you require any additional information, feel free to contact me at your earliest convenience.",
+            "label": "yes"
+        },
+        {
+            "task": "Does the passage include the accurate order number 000000180? Yes or no.",
+            "prediction": "I hope this message finds you well. I am writing to request a refund for the phone screen protector I purchased, which unfortunately broke after just three days of use. The details of my purchase are as follows:\n\nOrder Number: [Insert product number here]\nProduct SKU: [Insert Product SKU Here]\nI am disappointed with the quality of the screen protector as it did not meet my expectations for durability. Given that it broke so quickly, I believe a refund is warranted.\n\nPlease advise on the next steps to process my refund. If you require any additional information, feel free to contact me at your earliest convenience.",
+            "label": "no"
+        },
+        {
+            "task": "Does the passage include the accurate product SKU B087QJN9W1? Yes or no.",
+            "prediction": "I hope this message finds you well. I am writing to request a refund for the phone screen protector I purchased, which unfortunately broke after just three days of use. The details of my purchase are as follows:\n\nOrder Number: #000000180\nProduct SKU: [Insert Product SKU Here]\nI am disappointed with the quality of the screen protector as it did not meet my expectations for durability. Given that it broke so quickly, I believe a refund is warranted.\n\nPlease advise on the next steps to process my refund. If you require any additional information, feel free to contact me at your earliest convenience.",
+            "label": "no"
+        },
+        
+    ]
+}

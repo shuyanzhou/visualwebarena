@@ -17,7 +17,9 @@ from evaluation_harness.env_config import (
 from llms.providers.openai_utils import (
     generate_from_openai_chat_completion,
 )
+import warnings
 
+GPT_MODEL = "gpt-4-1106-preview"
 
 class PseudoPage:
     def __init__(self, original_page: Page | None, url: str):
@@ -608,10 +610,10 @@ def llm_fuzzy_match(pred: str, reference: str, question: str) -> float:
     ]
 
     response = generate_from_openai_chat_completion(
-        model="gpt-4-1106-preview",
+        model=GPT_MODEL,
         messages=messages,
         temperature=0,
-        max_tokens=768,
+        max_tokens=512,
         top_p=1.0,
         context_length=0,
     ).lower()
@@ -643,7 +645,7 @@ def llm_ua_match(pred: str, reference: str, question: str) -> float:
     ]
 
     response = generate_from_openai_chat_completion(
-        model="gpt-4-1106-preview",
+        model=GPT_MODEL,
         messages=messages,
         temperature=0,
         max_tokens=768,
@@ -655,3 +657,180 @@ def llm_ua_match(pred: str, reference: str, question: str) -> float:
     else:
         assert "same" in response
         return 1.0
+
+
+def llm_fuzzy_exact_match(pred: str, reference: str, task: str) -> float:
+    user_message = f"""
+# Task overview
+Given a task description, the reference answer, and the prediction, determine if the prediction is correct. The reference answer presents the correct answer in its minial format. A prediction is considered correct if it matches the reference answer in substance. This includes not only exact matches but also correct paraphrases or equivalent formulations.
+
+# The task
+Task: {task}
+Reference answer: {reference}
+Prediction: {pred}
+
+# Response format
+Perform step-by-step reasoning first, then provide the answer in the format of "Answer: Correct" or "Answer: Incorrect".
+"""
+    messages: list[dict[str, Any]] = []
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant"},
+        {"role": "user", "content": user_message.strip()},
+    ]
+
+    response = generate_from_openai_chat_completion(
+        model=GPT_MODEL,
+        messages=messages,
+        temperature=0,
+        max_tokens=512,
+        top_p=1.0,
+        context_length=0,
+    ).lower()
+
+    if "answer: correct" in response:
+        return 1.0
+    else:
+        assert "answer: incorrect" in response, response
+        return 0.0
+
+
+def llm_fuzzy_must_include(pred: str, reference: str, task: str) -> float:
+    """Check whether the prediction contains the must_include information."""
+    user_message = f"""
+# Task overview
+Given a task description, determine if the prediction contains the specific required information. This includes not only exact matches but also correct paraphrases or equivalent formulations.
+
+# The task
+Task: {task}
+Required information: {reference}
+Prediction: {pred}
+
+# Response format
+Perform step-by-step reasoning first, then provide the answer in the format of "Answer: Contain" or "Answer: Not contain".
+"""
+    messages: list[dict[str, Any]] = []
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant"},
+        {"role": "user", "content": user_message.strip()},
+    ]
+
+    response = generate_from_openai_chat_completion(
+        model=GPT_MODEL,
+        messages=messages,
+        temperature=0,
+        max_tokens=512,
+        top_p=1.0,
+        context_length=0,
+    ).lower()
+
+    if "answer: contain" in response:
+        return 1.0
+    else:
+        assert "answer: not contain" in response, response
+        return 0.0
+
+
+def llm_fuzzy_na_match(pred: str, reason: str, task: str) -> float:
+    """Check if the reason for the unachievability is correct."""
+    user_message = f"""
+# Task overview
+Given a task description and the ground truth reason why the task is not achievable, determine if the predicted reason is correct. This includes not only exact matches but also correct paraphrases or equivalent formulations.
+
+# The task
+Task: {task}
+Actual unachievable reason: {reason}
+Predicted unachievable reason: {pred}
+
+# Response format
+Perform step-by-step reasoning first, then provide the answer in the format of "Answer: Correct" or "Answer: Incorrect".
+"""
+    messages: list[dict[str, Any]] = []
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant"},
+        {"role": "user", "content": user_message.strip()},
+    ]
+
+    response = generate_from_openai_chat_completion(
+        model=GPT_MODEL,
+        messages=messages,
+        temperature=0,
+        max_tokens=512,
+        top_p=1.0,
+        context_length=0,
+    ).lower()
+
+    if "answer: correct" in response:
+        return 1.0
+    else:
+        assert "answer: incorrect" in response, response
+        return 0.0
+
+
+@beartype
+def llm_question_answering(question: str, answer: str, passage: str) -> float:
+    """Check if the expected answer can be generated from the question and context."""
+    user_message = f"""
+# Task overview
+Given a passage and a question, provide an answer.
+
+# The task
+Passage: {passage}
+Question: {question}. This includes not only exact matches but also correct paraphrases or equivalent formulations.
+
+# Response format
+Perform step-by-step reasoning first, then provide the answer in the format of "Answer: Yes" or "Answer: No".
+"""
+    messages: list[dict[str, Any]] = []
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant"},
+        {"role": "user", "content": user_message.strip()},
+    ]
+
+    response = generate_from_openai_chat_completion(
+        model=GPT_MODEL,
+        messages=messages,
+        temperature=0,
+        max_tokens=512,
+        top_p=1.0,
+        context_length=0,
+    ).lower()
+
+    if "answer: yes" in response:
+        return 1.0
+    else:
+        assert "answer: no" in response, response
+        return 0.0
+
+
+@beartype
+def llm_context_aware_question_answering(question: str, answer: str, passage: str, context: str) -> float:
+    """Check if the expected answer can be generated from the question and context."""
+    user_message = f"""
+# Task
+Question: {context}
+Passage: {passage}
+{question}. This includes not only exact matches but also correct paraphrases or equivalent formulations.
+
+# Response format
+Perform step-by-step reasoning first, then provide the answer in the format of "Answer: Yes" or "Answer: No".
+"""
+    messages: list[dict[str, Any]] = []
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant"},
+        {"role": "user", "content": user_message.strip()},
+    ]
+
+    response = generate_from_openai_chat_completion(
+        model=GPT_MODEL,
+        messages=messages,
+        temperature=0,
+        max_tokens=512,
+        top_p=1.0,
+        context_length=0,
+    ).lower()
+
+    if "answer: yes" in response:
+        return 1.0
+    else:
+        assert "answer: no" in response, response
+        return 0.0
